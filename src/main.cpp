@@ -4,6 +4,8 @@
 #include <iostream>
 #include "renderer/shaderProgram.h"
 
+using namespace std;
+
 int g_winSizeX = 640;
 int g_winSizeY = 480;
 
@@ -56,7 +58,7 @@ int main(void) {
 
     /* Initialize the library */
     if (!glfwInit()) {
-        std::cout << "FAILED glfwInit" << std::endl;
+        cout << "FAILED glfwInit" << endl;
         return -1;
     }
 
@@ -67,7 +69,7 @@ int main(void) {
     /* Create a windowed mode window and its OpenGL context */
     pwindow = glfwCreateWindow(g_winSizeX, g_winSizeY, "GameCpp", nullptr, nullptr);
     if (!pwindow) {
-        std::cout << "FAILED glfwCreateWindow" << std::endl;
+        cout << "FAILED glfwCreateWindow" << endl;
         glfwTerminate();
         return -1;
     }
@@ -79,20 +81,20 @@ int main(void) {
     glfwMakeContextCurrent(pwindow);
 
     if (!gladLoadGL()) {
-        std::cout << "ERR GLAD" << std::endl;
+        cout << "ERR GLAD" << endl;
         return -1;
     }
 
-    std::cout << "Render: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+    cout << "Render: " << glGetString(GL_RENDERER) << endl;
+    cout << "OpenGL version: " << glGetString(GL_VERSION) << endl;
 
     glClearColor(1, 1, 0, 1);
 
-    std::string vertexShader(vertex_shader);
-    std::string fragmentShader(fragment_shader);
+    string vertexShader(vertex_shader);
+    string fragmentShader(fragment_shader);
     Renderer::ShaderProgram shaderProgaram(vertex_shader, fragment_shader);
     if (!shaderProgaram.isCompiled()) {
-        std::cerr << "Can't create shader program!" << std::endl;
+        cerr << "Can't create shader program!" << endl;
         return -1;
     }
 
