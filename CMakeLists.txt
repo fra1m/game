@@ -3,7 +3,9 @@ cmake_minimum_required(VERSION 3.30.4)
 set(PROJECT_NAME GameCPP)
 project(${PROJECT_NAME})
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+# set(CMAKE_CXX_STANDARD 17)
+
+add_executable(${PROJECT_NAME} src/main.cpp src/renderer/shaderProgram.cpp src/renderer/shaderProgram.h)
 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
