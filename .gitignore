@@ -2,4 +2,8 @@
 .clang-format
 
 build.bat
+cmake.bat
+run_test.bat
+
 .vscode
+lauch.json

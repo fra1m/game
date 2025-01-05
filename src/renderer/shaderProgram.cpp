@@ -1,19 +1,21 @@
 #include "shaderProgram.h"
 #include <iostream>
+#include <spdlog/spdlog.h>
 
+using namespace spdlog;
 using namespace std;
 
 namespace Renderer {
 ShaderProgram::ShaderProgram(const string& vertexShader, const string& fragmentShader) {
     GLuint vertexShaderID;
     if (!createShader(vertexShader, GL_VERTEX_SHADER, vertexShaderID)) {
-        cerr << "VERTEX SHADER Compile-time error:\n" << endl;
+        error("[ERORR::VERTEX-ShaderProgram] FRAGMENT SHADER Compile-time error: ");
         return;
     }
 
     GLuint fragmentShaderID;
     if (!createShader(fragmentShader, GL_FRAGMENT_SHADER, fragmentShaderID)) {
-        cerr << "FRAGMENT SHADER Compile-time error:\n" << endl;
+        error("[ERORR::SHADER-ShaderProgram] FRAGMENT SHADER Compile-time error: ");
         glDeleteShader(vertexShaderID);
         return;
     }
@@ -28,7 +30,7 @@ ShaderProgram::ShaderProgram(const string& vertexShader, const string& fragmentS
     if (!susccess) {
         GLchar infolog[1024];
         glGetShaderInfoLog(m_ID, 1024, nullptr, infolog);
-        cerr << "ERRO::SHADER Link-time error:\n" << infolog << endl;
+        error("[ERROR::ShaderProgram] Link-time error: {}", infolog);  // FIXME: Разобраться с infolog (Link-time erro): ►∙?я┐)
     } else {
         m_isCompiled = true;
     }
@@ -47,7 +49,7 @@ bool ShaderProgram::createShader(const string& source, const GLenum shaderType, 
     if (!susccess) {
         GLchar infolog[1024];
         glGetShaderInfoLog(shaderID, 1024, nullptr, infolog);
-        cerr << "ERRO::SHADER Compile-time error:\n" << infolog << endl;
+        error("[bool ERORR::ShaderProgram] Link-time error: {}", infolog);
         return false;
     }
     return true;
