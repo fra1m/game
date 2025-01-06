@@ -1,9 +1,14 @@
 #include "resourceManager.h"
 #include "../renderer/shaderProgram.h"
+#include "../renderer/texture2D.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <spdlog/spdlog.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#include "stb_image.h"
 
 using namespace std;
 using namespace spdlog;
@@ -24,7 +29,7 @@ string ResourceManager::getFileString(const string& relativeFilePath) const {
     }
     stringstream buffer;
     buffer << f.rdbuf();
-    info("[INFO::ResourceManager] Buffer :\n{}", buffer.str());
+    info("[INFO::ResourceManager] Buffer:\n{}", buffer.str());
 
     return buffer.str();
 };
@@ -57,5 +62,38 @@ shared_ptr<Renderer::ShaderProgram> ResourceManager::getShaderProgram(const stri
         return it->second;
     }
     error("[ERROR::ResourceManager] Can't find shader program: {}", shaderName);
+    return nullptr;
+};
+
+shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const string& textureName, const string& texturePath) {
+    int channels = 0;
+    int width = 0;
+    int height = 0;
+
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* pixeles = stbi_load(string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, 0);
+    if (!pixeles) {
+        error("[ERROR::ResourceManager] Can't load image: {}, path: {}", textureName, (m_path + "/" + texturePath).c_str());
+        return nullptr;
+    }
+
+    info("[INFO::ResourceManager] Texture:\nTexture channels: {}\nTexture width: {}\nTexture height: {}\nTexture path: {}", channels, width,
+         height, string(m_path + "/" + texturePath).c_str());
+
+    shared_ptr<Renderer::Texture2D> newTexture =
+        m_textures.emplace(textureName, make_shared<Renderer::Texture2D>(width, height, pixeles, channels, GL_NEAREST, GL_CLAMP_TO_EDGE))
+            .first->second;
+
+    stbi_image_free(pixeles);
+
+    return newTexture;
+}
+
+shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const string& textureName) {
+    TextureMap::const_iterator it = m_textures.find(textureName);
+    if (it != m_textures.end()) {
+        return it->second;
+    }
+    error("[ERROR::ResourceManager] Can't find textures: {}", textureName);
     return nullptr;
 };

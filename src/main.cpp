@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+
 #include "renderer/shaderProgram.h"
 #include "resources/resourceManager.h"
 #include <spdlog/spdlog.h>
@@ -83,6 +84,9 @@ int main(int argc, char** argv) {
             error("[ERROR::Main] Can't crate shader program: {}", "DefaultShader");
             return -1;
         }
+
+        resourceManager.loadTexture("DefaultTexture", "res/textures/map_16x16.png");
+
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, points_vbo);
