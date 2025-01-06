@@ -1,11 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 #include "renderer/shaderProgram.h"
+#include "renderer/texture2D.h"
 #include "resources/resourceManager.h"
-#include <spdlog/spdlog.h>
+
 
 using namespace std;
 using namespace spdlog;
@@ -24,6 +25,12 @@ GLfloat colors[] = {
     1.0f, 0.0f, 0.0f, 
     0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 1.0f,
+};
+
+GLfloat texCoords[] = {
+    0.5f, 1.0f,
+    1.0f, 0.0f,
+    0.0f, 0.0f,
 };
 // clang-format on
 
@@ -85,7 +92,7 @@ int main(int argc, char** argv) {
             return -1;
         }
 
-        resourceManager.loadTexture("DefaultTexture", "res/textures/map_16x16.png");
+        auto tex = resourceManager.loadTexture("DefaultTexture", "res/textures/map_16x16.png");
 
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
@@ -96,6 +103,11 @@ int main(int argc, char** argv) {
         glGenBuffers(1, &colors_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, colors_vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+
+        GLuint texCoords_vbo = 0;
+        glGenBuffers(1, &texCoords_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoords_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
 
         GLuint vertex_array_obj = 0;
         glGenVertexArrays(1, &vertex_array_obj);
@@ -109,6 +121,13 @@ int main(int argc, char** argv) {
         glBindBuffer(GL_ARRAY_BUFFER, colors_vbo);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
+        glEnableVertexAttribArray(2);
+        glBindBuffer(GL_ARRAY_BUFFER, texCoords_vbo);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+        pDefaultShaderProgram->use();
+        pDefaultShaderProgram->setInt("tex", 0);
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(pwindow)) {
             /* Render here */
@@ -116,6 +135,7 @@ int main(int argc, char** argv) {
 
             pDefaultShaderProgram->use();
             glBindVertexArray(vertex_array_obj);
+            tex->bind();
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             /* Swap front and back buffers */
