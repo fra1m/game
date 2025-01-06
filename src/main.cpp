@@ -2,18 +2,17 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <spdlog/spdlog.h>
+#include <glm/vec2.hpp>
 
 #include "renderer/shaderProgram.h"
 #include "renderer/texture2D.h"
 #include "resources/resourceManager.h"
 
-
 using namespace std;
+using namespace glm;
 using namespace spdlog;
 
-int g_winSizeX = 640;
-int g_winSizeY = 480;
-
+ivec2 g_winSize(640, 480);
 // clang-format off
 GLfloat points[] = {
     0.0f, 0.5f, 0.0f, 
@@ -35,9 +34,9 @@ GLfloat texCoords[] = {
 // clang-format on
 
 void glfwWinSizeCallback(GLFWwindow* pwindow, int width, int height) {
-    g_winSizeX = width;
-    g_winSizeY = height;
-    glViewport(0, 0, g_winSizeX, g_winSizeY);
+    g_winSize.x = width;
+    g_winSize.y = height;
+    glViewport(0, 0, g_winSize.x, g_winSize.y);
 }
 
 void glfwKeyCallback(GLFWwindow* pwindow, int key, int scancode, int action, int mode) {
@@ -60,7 +59,7 @@ int main(int argc, char** argv) {
     glfwInitHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    pwindow = glfwCreateWindow(g_winSizeX, g_winSizeY, "GameCpp", nullptr, nullptr);
+    pwindow = glfwCreateWindow(g_winSize.x, g_winSize.y, "GameCpp", nullptr, nullptr);
     if (!pwindow) {
         error("[ERROR::Main] FAILED glfwCreateWindow", 1);
         glfwTerminate();
