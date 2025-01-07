@@ -9,13 +9,14 @@ using namespace glm;
 
 namespace Renderer {
 class ShaderProgram {
+   private:
+    bool createShader(const string& source, const GLenum shaderType, GLuint& shaderID);
+    bool m_isCompiled = false;
+    GLuint m_ID = 0;
+
    public:
     ShaderProgram(const string& vertexShader, const string& fragmentShader);
     ~ShaderProgram();
-    bool isCompiled() const { return m_isCompiled; }
-    void use() const;
-    void setInt(const string& name, const GLint value);
-    void setMatrix4(const string& name, const mat4& matrix);
 
     ShaderProgram() = delete;
     ShaderProgram(ShaderProgram&) = delete;
@@ -23,9 +24,9 @@ class ShaderProgram {
     ShaderProgram& operator=(ShaderProgram&& ShaderProgram);
     ShaderProgram(ShaderProgram&& ShaderProgram);
 
-   private:
-    bool createShader(const string& source, const GLenum shaderType, GLuint& shaderID);
-    bool m_isCompiled = false;
-    GLuint m_ID = 0;
+    bool isCompiled() const { return m_isCompiled; }
+    void use() const;
+    void setInt(const string& name, const GLint value);
+    void setMatrix4(const string& name, const mat4& matrix);
 };
 }  // namespace Renderer

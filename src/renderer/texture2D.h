@@ -26,9 +26,9 @@ class Texture2D {
     Texture2D() = delete;
     Texture2D(const Texture2D&) = delete;
     Texture2D& operator=(const Texture2D&) = delete;
-
     Texture2D& operator=(Texture2D&& texture2D);
     Texture2D(Texture2D&& texture2D);
+
     void bind() const;
 };
 }  // namespace Renderer
