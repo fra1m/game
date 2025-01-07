@@ -1,9 +1,11 @@
 #include "shaderProgram.h"
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <spdlog/spdlog.h>
 
 using namespace spdlog;
 using namespace std;
+using namespace glm;
 
 namespace Renderer {
 ShaderProgram::ShaderProgram(const string& vertexShader, const string& fragmentShader) {
@@ -76,5 +78,9 @@ ShaderProgram::ShaderProgram(ShaderProgram&& ShaderProgram) {
 }
 
 void ShaderProgram::setInt(const string& name, const GLint value) { glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value); };
+
+void ShaderProgram::setMatrix4(const string& name, const mat4& matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, value_ptr(matrix));
+};
 
 }  // namespace Renderer

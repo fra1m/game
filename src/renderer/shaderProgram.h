@@ -1,9 +1,11 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/mat4x4.hpp>
 #include <iostream>
 
 using namespace std;
+using namespace glm;
 
 namespace Renderer {
 class ShaderProgram {
@@ -13,6 +15,7 @@ class ShaderProgram {
     bool isCompiled() const { return m_isCompiled; }
     void use() const;
     void setInt(const string& name, const GLint value);
+    void setMatrix4(const string& name, const mat4& matrix);
 
     ShaderProgram() = delete;
     ShaderProgram(ShaderProgram&) = delete;

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 #include <glm/vec2.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "renderer/shaderProgram.h"
 #include "renderer/texture2D.h"
@@ -13,11 +15,12 @@ using namespace glm;
 using namespace spdlog;
 
 ivec2 g_winSize(640, 480);
+
 // clang-format off
 GLfloat points[] = {
-    0.0f, 0.5f, 0.0f, 
-    0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
+    0.0f, 50.f, 0.0f, 
+    50.f, -50.f, 0.0f,
+    -50.f, -50.f, 0.0f,
 };
 
 GLfloat colors[] = {
@@ -127,6 +130,16 @@ int main(int argc, char** argv) {
         pDefaultShaderProgram->use();
         pDefaultShaderProgram->setInt("tex", 0);
 
+        mat4 modelMatrix_1 = mat4(1.f);
+        modelMatrix_1 = translate(modelMatrix_1, vec3(50.f, 50.f, 0.f));
+
+        mat4 modelMatrix_2 = mat4(1.f);
+        modelMatrix_2 = translate(modelMatrix_2, vec3(590.f, 200.f, 0.f));
+
+        mat4 projectMatrix = ortho(0.f, static_cast<float>(g_winSize.x), 0.f, static_cast<float>(g_winSize.y), -100.f, 100.f);
+
+        pDefaultShaderProgram->setMatrix4("projectionMat", projectMatrix);
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(pwindow)) {
             /* Render here */
@@ -135,8 +148,12 @@ int main(int argc, char** argv) {
             pDefaultShaderProgram->use();
             glBindVertexArray(vertex_array_obj);
             tex->bind();
+
+            pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_1);
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
+            pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_2);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
             /* Swap front and back buffers */
             glfwSwapBuffers(pwindow);
 
