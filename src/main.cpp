@@ -155,6 +155,9 @@ int main(int argc, char** argv) {
         pSpriteShaderProgram->setInt("tex", 0);
         pSpriteShaderProgram->setMatrix4("projectionMat", projectMatrix);
         /* Loop until the user closes the window */
+        float x, y = 0.0f;
+        float i;
+
         while (!glfwWindowShouldClose(pwindow)) {
             /* Render here */
             glClear(GL_COLOR_BUFFER_BIT);
@@ -170,10 +173,24 @@ int main(int argc, char** argv) {
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             // TODO: удали анимацию
-            float i;
             pSprite->render();
+            if (glfwGetKey(pwindow, GLFW_KEY_A) == GLFW_PRESS) {
+                x -= 1.0f;
+            }
+            if (glfwGetKey(pwindow, GLFW_KEY_D) == GLFW_PRESS) {
+                x += 1.0f;
+            }
+            if (glfwGetKey(pwindow, GLFW_KEY_S) == GLFW_PRESS) {
+                y -= 1.0f;
+            }
+            if (glfwGetKey(pwindow, GLFW_KEY_W) == GLFW_PRESS) {
+                y += 1.0f;
+            }
+            if (glfwGetKey(pwindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+                i += 1;
+            }
             pSprite->setRotation(i);
-            i += 5;
+            pSprite->setPosition(vec2(x, y));
             /* Swap front and back buffers */
             glfwSwapBuffers(pwindow);
 
