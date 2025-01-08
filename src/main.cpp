@@ -8,6 +8,7 @@
 
 #include "renderer/shaderProgram.h"
 #include "renderer/texture2D.h"
+#include "renderer/sprite.h"
 #include "resources/resourceManager.h"
 
 using namespace std;
@@ -94,7 +95,17 @@ int main(int argc, char** argv) {
             return -1;
         }
 
+        auto pSpriteShaderProgram = resourceManager.loadShaders("SpriteShader", "res/shaders/vSprite.txt", "res/shaders/fSprite.txt");
+        if (!pDefaultShaderProgram) {
+            error("[ERROR::Main] Can't crate shader program: {}", "SpriteShader");
+            return -1;
+        }
+
         auto tex = resourceManager.loadTexture("DefaultTexture", "res/textures/map_16x16.png");
+
+        auto pSprite = resourceManager.loadSprite("NewSprite", "DefaultTexture", "SpriteShader", 50, 100);
+        pSprite->setPosition(vec2(300, 100));
+        pSprite->setSize(vec2(200, 200));
 
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
@@ -140,6 +151,9 @@ int main(int argc, char** argv) {
 
         pDefaultShaderProgram->setMatrix4("projectionMat", projectMatrix);
 
+        pSpriteShaderProgram->use();
+        pSpriteShaderProgram->setInt("tex", 0);
+        pSpriteShaderProgram->setMatrix4("projectionMat", projectMatrix);
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(pwindow)) {
             /* Render here */
@@ -154,6 +168,12 @@ int main(int argc, char** argv) {
 
             pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_2);
             glDrawArrays(GL_TRIANGLES, 0, 3);
+
+            // TODO: удали анимацию
+            float i;
+            pSprite->render();
+            pSprite->setRotation(i);
+            i += 5;
             /* Swap front and back buffers */
             glfwSwapBuffers(pwindow);
 

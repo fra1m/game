@@ -17,9 +17,12 @@ class Sprite {
    private:
     shared_ptr<Texture2D> m_pTexture;
     shared_ptr<ShaderProgram> m_pShaderProgram;
-    vec2& m_posotion;
-    vec2& m_size;
+    vec2 m_posotion;
+    vec2 m_size;
     float m_rotation;
+    GLuint m_VAO;
+    GLuint m_vertexCoordsVBO;
+    GLuint m_textureCoordsVBO;
 
    public:
     Sprite(const shared_ptr<Texture2D> pTexture, const shared_ptr<ShaderProgram> pShaderProgram, const vec2& posotion = vec2(0.f),
@@ -32,7 +35,7 @@ class Sprite {
     void render() const;
     void setPosition(const vec2& posotion);
     void setSize(const vec2& size);
-    void setSize(const float rotation);
+    void setRotation(const float rotation);
 };
 
 }  // namespace Renderer

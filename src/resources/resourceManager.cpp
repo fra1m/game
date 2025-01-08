@@ -1,10 +1,14 @@
 #include "resourceManager.h"
 #include "../renderer/shaderProgram.h"
 #include "../renderer/texture2D.h"
+#include "../renderer/sprite.h"
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <spdlog/spdlog.h>
+#include <glm/vec2.hpp>
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -12,6 +16,7 @@
 
 using namespace std;
 using namespace spdlog;
+using namespace glm;
 
 ResourceManager::ResourceManager(const string& execPath) {
     size_t found = execPath.find_last_of("/\\");
@@ -95,5 +100,33 @@ shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const string& textur
         return it->second;
     }
     error("[ERROR::ResourceManager] Can't find textures: {}", textureName);
+    return nullptr;
+};
+
+shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const string& spriteName, const string& textureName, const string& shaderName,
+                                                         const unsigned int spriteWidth, const unsigned int spriteHeight) {
+    auto pTexture = getTexture(textureName);
+    if (!pTexture) {
+        error("[ERROR::ResourceManager] Can't find textures: {} for the sprite: {}", textureName, spriteName);
+    }
+
+    auto pShader = getShaderProgram(shaderName);
+    if (!pShader) {
+        error("[ERROR::ResourceManager] Can't find shader: {} for the sprite: {}", shaderName, spriteName);
+    }
+
+    shared_ptr<Renderer::Sprite> newSprite =
+        m_sprites.emplace(textureName, make_shared<Renderer::Sprite>(pTexture, pShader, vec2(0.f, 0.f), vec2(spriteWidth, spriteHeight)))
+            .first->second;
+
+    return newSprite;
+};
+
+shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const string& spriteName) {
+    SpritesMap::const_iterator it = m_sprites.find(spriteName);
+    if (it != m_sprites.end()) {
+        return it->second;
+    }
+    error("[ERROR::ResourceManager] Can't find sprite: {}", spriteName);
     return nullptr;
 };

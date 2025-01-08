@@ -51,7 +51,7 @@ bool ShaderProgram::createShader(const string& source, const GLenum shaderType, 
     if (!susccess) {
         GLchar infolog[1024];
         glGetShaderInfoLog(shaderID, 1024, nullptr, infolog);
-        error("[bool ERORR::ShaderProgram] Link-time error: {}", infolog);
+        error("[bool ERORR::ShaderProgram] Link-time error:\n{}", infolog);
         return false;
     }
     return true;
