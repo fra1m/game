@@ -1,4 +1,11 @@
 #include "texture2D.h"
+#include <spdlog/spdlog.h>
+#include <glm/vec2.hpp>
+#include <iostream>
+
+using namespace std;
+using namespace spdlog;
+using namespace glm;
 
 // TODO: поиграть с фильтрами и врапами (learn opengl)
 namespace Renderer {
@@ -51,5 +58,20 @@ Texture2D::Texture2D(Texture2D&& texture2D) {
     m_width = texture2D.m_width;
     m_height = texture2D.m_height;
 };
+
 void Texture2D::bind() const { glBindTexture(GL_TEXTURE_2D, m_ID); };
+
+void Texture2D::addSubTexture(const string name, const vec2 leftBottomUV, const vec2 rightTopUV) {
+    m_subTextures.emplace(move(name), SubTexture2D(leftBottomUV, rightTopUV));
+};
+
+const Texture2D::SubTexture2D& Texture2D::getSubTexture(const string& name) const {
+    auto it = m_subTextures.find(name);
+
+    if (it != m_subTextures.end()) {
+        return it->second;
+    }
+    const static SubTexture2D defaultSubTexture;
+    return defaultSubTexture;
+};
 }  // namespace Renderer

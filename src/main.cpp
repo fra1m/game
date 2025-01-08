@@ -103,9 +103,13 @@ int main(int argc, char** argv) {
 
         auto tex = resourceManager.loadTexture("DefaultTexture", "res/textures/map_16x16.png");
 
-        auto pSprite = resourceManager.loadSprite("NewSprite", "DefaultTexture", "SpriteShader", 50, 100);
+        vector<string> subTexturesNames = {"block",        "topBlock",      "bottomBlock",     "leftBlock",        "rightBlock",
+                                           "topLeftBlock", "topRightBlock", "bottomLeftBlock", "bottomRightBlock", "beton"};
+        auto pTextureAtlas =
+            resourceManager.laodTextureAtlas("DefaultTextureAtlas", "res/textures/map_16x16.png", move(subTexturesNames), 16, 16);
+
+        auto pSprite = resourceManager.loadSprite("NewSprite", "DefaultTextureAtlas", "SpriteShader", 100, 100, "topRightBlock");
         pSprite->setPosition(vec2(300, 100));
-        pSprite->setSize(vec2(200, 200));
 
         GLuint points_vbo = 0;
         glGenBuffers(1, &points_vbo);
@@ -186,8 +190,11 @@ int main(int argc, char** argv) {
             if (glfwGetKey(pwindow, GLFW_KEY_W) == GLFW_PRESS) {
                 y += 1.0f;
             }
-            if (glfwGetKey(pwindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            if (glfwGetMouseButton(pwindow, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
                 i += 1;
+            }
+            if (glfwGetMouseButton(pwindow, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+                i -= 1;
             }
             pSprite->setRotation(i);
             pSprite->setPosition(vec2(x, y));

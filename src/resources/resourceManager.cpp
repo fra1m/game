@@ -9,7 +9,6 @@
 #include <spdlog/spdlog.h>
 #include <glm/vec2.hpp>
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #include "stb_image.h"
@@ -34,7 +33,6 @@ string ResourceManager::getFileString(const string& relativeFilePath) const {
     }
     stringstream buffer;
     buffer << f.rdbuf();
-    info("[INFO::ResourceManager] Buffer:\n{}", buffer.str());
 
     return buffer.str();
 };
@@ -104,7 +102,8 @@ shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const string& textur
 };
 
 shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const string& spriteName, const string& textureName, const string& shaderName,
-                                                         const unsigned int spriteWidth, const unsigned int spriteHeight) {
+                                                         const unsigned int spriteWidth, const unsigned int spriteHeight,
+                                                         const string& subTextureName) {
     auto pTexture = getTexture(textureName);
     if (!pTexture) {
         error("[ERROR::ResourceManager] Can't find textures: {} for the sprite: {}", textureName, spriteName);
@@ -116,7 +115,9 @@ shared_ptr<Renderer::Sprite> ResourceManager::loadSprite(const string& spriteNam
     }
 
     shared_ptr<Renderer::Sprite> newSprite =
-        m_sprites.emplace(textureName, make_shared<Renderer::Sprite>(pTexture, pShader, vec2(0.f, 0.f), vec2(spriteWidth, spriteHeight)))
+        m_sprites
+            .emplace(textureName,
+                     make_shared<Renderer::Sprite>(pTexture, subTextureName, pShader, vec2(0.f, 0.f), vec2(spriteWidth, spriteHeight)))
             .first->second;
 
     return newSprite;
@@ -129,4 +130,32 @@ shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const string& spriteName
     }
     error("[ERROR::ResourceManager] Can't find sprite: {}", spriteName);
     return nullptr;
+};
+
+shared_ptr<Renderer::Texture2D> ResourceManager::laodTextureAtlas(const string textureName, const string texturePath,
+                                                                  const vector<string> subTextures, const unsigned int subTextureWidth,
+                                                                  const unsigned int subTextureHeight) {
+    auto pTexture = loadTexture(move(textureName), move(texturePath));
+    if (pTexture) {
+        const unsigned int textureWidth = pTexture->width();
+        const unsigned int textureHeight = pTexture->height();
+        unsigned int currentTextureOffsetX = 0;
+        unsigned int currentTextureOffsetY = textureHeight;
+
+        for (const auto& currentSubTextureName : subTextures) {
+            vec2 leftBottomUV(static_cast<float>(currentTextureOffsetX) / textureWidth,
+                              static_cast<float>(currentTextureOffsetY - subTextureHeight) / textureHeight);
+            vec2 rightTopUV(static_cast<float>(currentTextureOffsetX + subTextureWidth) / textureWidth,
+                            static_cast<float>(currentTextureOffsetY) / textureHeight);
+            pTexture->addSubTexture(move(currentSubTextureName), leftBottomUV, rightTopUV);
+
+            currentTextureOffsetX += subTextureWidth;
+            if (currentTextureOffsetX >= textureWidth) {
+                currentTextureOffsetX = 0;
+                currentTextureOffsetY -= subTextureHeight;
+            }
+        }
+    };
+
+    return pTexture;
 };

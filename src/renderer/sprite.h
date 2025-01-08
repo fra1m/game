@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <glm/vec2.hpp>
 
+#include <string>
 #include <iostream>
 #include <memory>
 
@@ -19,14 +20,14 @@ class Sprite {
     shared_ptr<ShaderProgram> m_pShaderProgram;
     vec2 m_posotion;
     vec2 m_size;
-    float m_rotation;
     GLuint m_VAO;
     GLuint m_vertexCoordsVBO;
     GLuint m_textureCoordsVBO;
+    float m_rotation;
 
    public:
-    Sprite(const shared_ptr<Texture2D> pTexture, const shared_ptr<ShaderProgram> pShaderProgram, const vec2& posotion = vec2(0.f),
-           const vec2& size = vec2(1.f), const float rotation = 0.f);
+    Sprite(const shared_ptr<Texture2D> pTexture, const string initialSubTexture, const shared_ptr<ShaderProgram> pShaderProgram,
+           const vec2& posotion = vec2(0.f), const vec2& size = vec2(1.f), const float rotation = 0.f);
     ~Sprite();
 
     Sprite(const Sprite&) = delete;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <memory>
 #include <map>
 
@@ -43,6 +44,9 @@ class ResourceManager {
     shared_ptr<Renderer::Texture2D> getTexture(const string& textureName);
 
     shared_ptr<Renderer::Sprite> loadSprite(const string& spriteName, const string& textureName, const string& shaderName,
-                                            const unsigned int spriteWidth, const unsigned int spriteHeight);
+                                            const unsigned int spriteWidth, const unsigned int spriteHeight, const string& subTextureName = "default");
     shared_ptr<Renderer::Sprite> getSprite(const string& spriteName);
+
+    shared_ptr<Renderer::Texture2D> laodTextureAtlas(const string textureName, const string texturePath, const vector<string> subTextures,
+                                                     const unsigned int subTextureWidth, const unsigned int subTextureHeight);
 };

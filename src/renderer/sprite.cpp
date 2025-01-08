@@ -15,8 +15,8 @@ using namespace std;
 using namespace glm;
 
 namespace Renderer {
-Sprite::Sprite(const shared_ptr<Texture2D> pTexture, const shared_ptr<ShaderProgram> pShaderProgram, const vec2& posotion, const vec2& size,
-               const float rotation)
+Sprite::Sprite(const shared_ptr<Texture2D> pTexture, const string initialSubTexture, const shared_ptr<ShaderProgram> pShaderProgram,
+               const vec2& posotion, const vec2& size, const float rotation)
     : m_pTexture(move(pTexture)), m_pShaderProgram(move(pShaderProgram)), m_posotion(posotion), m_size(size), m_rotation(rotation) {
     // clang-format off
     /** 
@@ -40,6 +40,9 @@ Sprite::Sprite(const shared_ptr<Texture2D> pTexture, const shared_ptr<ShaderProg
         1.f, 0.f,
         0.f, 0.f,
     };
+
+    auto subTexture = pTexture -> getSubTexture(move(initialSubTexture));
+
     /** 
      * @brief Texture coordinates for a quad (U, V) 
      * 
@@ -51,13 +54,13 @@ Sprite::Sprite(const shared_ptr<Texture2D> pTexture, const shared_ptr<ShaderProg
      * ``` 
      */
     const GLfloat textureCoords[] = {
-        0.f, 0.f,
-        0.f, 1.f,
-        1.f, 1.f,
+        subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
+        subTexture.leftBottomUV.x,  subTexture.rightTopUV.y,
+        subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
 
-        1.f, 1.f,
-        1.f, 0.f,
-        0.f, 0.f,
+        subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
+        subTexture.rightTopUV.x,    subTexture.leftBottomUV.y,
+        subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
     };
     // clang-format on
 
