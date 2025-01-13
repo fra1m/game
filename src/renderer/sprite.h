@@ -15,7 +15,7 @@ class Texture2D;
 class ShaderProgram;
 
 class Sprite {
-   private:
+   protected:
     shared_ptr<Texture2D> m_pTexture;
     shared_ptr<ShaderProgram> m_pShaderProgram;
     vec2 m_posotion;
@@ -33,7 +33,7 @@ class Sprite {
     Sprite(const Sprite&) = delete;
     Sprite& operator=(const Sprite&) = delete;
 
-    void render() const;
+    virtual void render() const;
     void setPosition(const vec2& posotion);
     void setSize(const vec2& size);
     void setRotation(const float rotation);

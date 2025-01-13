@@ -41,7 +41,7 @@ Sprite::Sprite(const shared_ptr<Texture2D> pTexture, const string initialSubText
         0.f, 0.f,
     };
 
-    auto subTexture = pTexture -> getSubTexture(move(initialSubTexture));
+    auto subTexture = m_pTexture -> getSubTexture(move(initialSubTexture));
 
     /** 
      * @brief Texture coordinates for a quad (U, V) 
